@@ -48,4 +48,32 @@ class ProfileController extends Controller
         return redirect()->back()->with('success', 'Registration successful! Please login.');
     }
 
+    public function edit_profile()
+    {
+        $customer = Customers::all();
+        return view('profile.userProfile', compact('customer'));
+    }
+
+    public function update_profile(Request $request)
+    {
+        $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'phone' => 'required|max:10|min:10',
+            
+        ]);
+
+        $customer = Auth::guard('customer')->user();
+
+        $customer->firstname = $request->firstname;
+        $customer->lastname = $request->lastname;
+        $customer->phone = $request->phone;
+
+        $customer->save();
+
+        return redirect()->back();
+
+        // return view('profile.update-profile-information-form', compact('customer'));
+    }
+
 }

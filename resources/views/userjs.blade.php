@@ -33,43 +33,48 @@
     })
 </script>
 
-<script>
-    $(document).ready(function() {
-        $('#loginForm').on('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            $.ajax({
-                var email = $('#email').val();
-                var pass = $('#password').val();
-                console.log(pass);
-                
-                url: "{{ route('customer.login') }}", // Laravel route for login
-                method: 'POST',
-                data: {
-                    email: email,
-                    password: pass,
-                    _token: "{{ csrf_token() }}" // CSRF token
-                },
-                success: function(response) {
-                    var res = JSON.parse(response);
-                    console.log(res);
 
-                    // if(response.success) {
-                    //     // Hide the modal and redirect to a protected page, or display a success message
-                    //     $('#loginModal').modal('hide');
-                    //     // window.location.href = response.redirect;
-                    //     window.location.href = "{{ route('home.index') }}"; // Redirect to the home page
-                    // }
-                },
-                error: function(response) {
-                    // Show validation errors or login failure messages
-                    console.log(response);
-                    $('#login-error').text(response.responseJSON.message).show();
-                }
-            });
+
+{{-- <script>
+$(document).ready(function(){
+    
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        $.ajax({
+            var email = $('#email').val();
+            var pass = $('#password').val();
+            console.log(pass);
+            
+            url: "{{ route('customer.login') }}", // Laravel route for login
+            method: 'POST',
+            data: {
+                email: email,
+                password: pass,
+                _token: "{{ csrf_token() }}" // CSRF token
+            },
+            success: function(response) {
+                var res = JSON.parse(response);
+                console.log(res);
+
+                // if(response.success) {
+                //     // Hide the modal and redirect to a protected page, or display a success message
+                //     $('#loginModal').modal('hide');
+                //     // window.location.href = response.redirect;
+                //     window.location.href = "{{ route('home.index') }}"; // Redirect to the home page
+                // }
+            },
+            error: function(response) {
+                var res = JSON.parse(response);
+                console.log(res);
+                // $("#loginModal").addClass("show");
+                // $('#loginModal').modal('show'); 
+            }
         });
     });
-</script>
+    
+});
+</script> --}}
 
 </body>
 

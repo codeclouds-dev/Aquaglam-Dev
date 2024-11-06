@@ -9,11 +9,12 @@
                     <img src="assets/images/avatar-icon-images-4.jpg" alt="" class="img-fluid">
                     
                     <h6>Hi, {{ Auth::guard('customer')->user()->firstname }}</h6>
+                    <h7>{{ Auth::guard('customer')->user()->phone }}</h6>
                     
                         {{-- {{ Auth::guard('customer')->user()->firstname }} --}}
                   
-                    <p>$ 38.00</p>
-                    <p><span>Balance</span></p>
+                    {{-- <p>$ 38.00</p>
+                    <p><span>Balance</span></p> --}}
                 </div>
                 <style>
 
@@ -26,16 +27,16 @@
                     </style>
                 <div class="user-options bg-gradients list" id="list">
                     <ul>
-                        <li><i class="fa fa-solid fa-wallet"></i> My Wallet</li>
-                        <li><i class="fa fa-solid fa-trophy"></i> My Rewards</li>
+                        {{-- <li><i class="fa fa-solid fa-wallet"></i> My Wallet</li> --}}
+                        <li><i class="fa fa-solid fa-trophy"></i> My Coupons</li>
                         <li><a href="#order"><i class="fa fa-solid fa-bag-shopping"></i> My Orders</a></li>
-                        <li class="active"><a href="#info"><i class="fa fa-solid fa-info"></i> &nbsp;Personal Info</a></li>
+                        <li class="active"><a href="#info"><i class="fa fa-solid fa-info"></i> &nbsp;Edit Profile</a></li>
                         <li><a href="#address"><i class="fa fa-solid fa-location-dot"></i> Address</a></li>
-                        <li><i class="fa fa-brands fa-paypal"></i> Payment Methods</li>
+                        {{-- <li><i class="fa fa-brands fa-paypal"></i> Payment Methods</li> --}}
                         {{-- <li><i class="fa fa-solid fa-phone"></i> Contact Preferences</li>
                         <li><i class="fa fa-brands fa-facebook"></i> Social Networks</li>
                         <li><i class="fa fa-solid fa-headset"></i> Need Helps</li> --}}
-                        <li><a href="{{route('customer.logout')}}"><i class="fa fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a></li>
+                        <li><a href="{{route('logout')}}"><i class="fa fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -44,6 +45,56 @@
             <div class="col-md-9 contents-in-profile">
 
                 <!--Personal Info-->
+                <div class="card mt-2 pop" id="info" style="display:none;">
+                    <div class="heading-section" id="user-profile">
+                        <h4>Personal Info</h4>
+                    </div>
+                    <div class="profile-content">
+                        <form action="{{ route('customer.updateprofile') }}" name="updateProfile" method="POST">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="">First Name</label>
+                                    <input type="text" name="firstname" id="" class="form-control" value="{{ Auth::guard('customer')->user()->firstname }}" required>
+                                </div>
+                                <br>
+                                <div class="col-md-6">
+                                    <label for="">Last Name</label>
+                                    <input type="text" name="lastname" id="" class="form-control" value="{{ Auth::guard('customer')->user()->lastname }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="">Mobile Number</label>
+                                    <input type="text" name="phone" maxlength="10" id="" class="form-control" value="{{ Auth::guard('customer')->user()->phone }}" onKeyUp="javascript: this.value = this.value.replace(/[^0-9]/g,'');" required>
+                                </div>
+                                <br>
+                                <div class="col-md-6">
+                                    <label for="">Email</label>
+                                    <input type="text" name="email" id="" class="form-control" value="{{ Auth::guard('customer')->user()->email }}" readonly>
+                                </div>
+                                <br>
+                                <div class="col-md-6">
+                                    {{-- <label>Gender</label>
+                                    <div class="genders d-flex">
+                                        <div class="male gender-box active">
+                                            <i class="fa-solid fa-venus"></i>
+                                            <p>Male</p>
+                                        </div>
+                                        <div class="female gender-box">
+                                            <i class="fa-solid fa-mars-stroke"></i>
+                                            <p>Female</p>
+                                        </div>
+                                    </div> --}}
+
+                                </div>
+
+                            </div>
+                            <button class="btn-submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--Personal Orders-->
                 <div class="card personal-info pop" id="order" style="display:none">
                     <div class="heading-section" id="user-profile">
                         <h4>My Orders</h4>
@@ -266,51 +317,7 @@
                         </div>
                     </div>
                 </div>
-                <!--Personal Info-->
-                <div class="card mt-2 pop" id="info" style="display:none;">
-                    <div class="heading-section" id="user-profile">
-                        <h4>Personal Info</h4>
-                    </div>
-                    <div class="profile-content">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="">First Name</label>
-                                <input type="text" name="firstname" id="" class="form-control" value="{{ Auth::guard('customer')->user()->firstname }}" readonly>
-                            </div>
-                            <br>
-                            <div class="col-md-6">
-                                <label for="">Last Name</label>
-                                <input type="text" name="lastname" id="" class="form-control" value="{{ Auth::guard('customer')->user()->lastname }}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="">Mobile Number</label>
-                                <input type="text" name="phone" id="" class="form-control" value="{{ Auth::guard('customer')->user()->phone }}" readonly>
-                            </div>
-                            <br>
-                            <div class="col-md-6">
-                                <label for="">Email</label>
-                                <input type="text" name="email" id="" class="form-control" value="{{ Auth::guard('customer')->user()->email }}" readonly>
-                            </div>
-                            <br>
-                            <div class="col-md-6">
-                                {{-- <label>Gender</label>
-                                <div class="genders d-flex">
-                                    <div class="male gender-box active">
-                                        <i class="fa-solid fa-venus"></i>
-                                        <p>Male</p>
-                                    </div>
-                                    <div class="female gender-box">
-                                        <i class="fa-solid fa-mars-stroke"></i>
-                                        <p>Female</p>
-                                    </div>
-                                </div> --}}
-
-                            </div>
-
-                        </div>
-                        {{-- <button class="btn-submit">Submit</button> --}}
-                    </div>
-                </div>
+                
 
                 <!--Personal Address-->
                 <div class="card mt-2 pop" id="address" style="display:none;">
@@ -354,7 +361,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="">Zip</label>
-                                <input type="text" name="zip" id="zip" class="form-control" placeholder="Please enter your zip" required>
+                                <input type="text" name="zip" maxlength="5" id="zip" class="form-control" placeholder="Please enter your zip" onKeyUp="javascript: this.value = this.value.replace(/[^0-9]/g,'');" required>
                             </div>
                             <br>
                             <div class="col-md-6">
