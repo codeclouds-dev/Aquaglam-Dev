@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CustomerAuthController extends Controller
 {
@@ -24,12 +25,12 @@ class CustomerAuthController extends Controller
         $request->validate([
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'phone' => 'required',
+            'phone' => 'required|max:10|min:10',
             'email' => 'required|string|email|max:255|unique:customers',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        Customers::create([
+        $customer = Customers::create([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'phone' => $request->phone,
@@ -37,7 +38,9 @@ class CustomerAuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('home.index')->with('success', 'Registration successful! Please login.');
+        Auth::guard('customer')->login($customer);
+
+        return redirect()->route('home.index');
     }
 
 
@@ -51,49 +54,24 @@ class CustomerAuthController extends Controller
     // Login Validation
     public function login(Request $request)
     {
-        // dd($request);
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:8',
+            'password' => 'required|min:6',
         ]);
+        // if(Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password])){
+        //     $userData = Auth::guard('customer')->user();
+        //     return redirect()->route('home.index')->with('userData', $userData);
+        // }
 
-        // If validation fails, return error messages as JSON
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid email or password.',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        //dd($validator, $request->only('email', 'password'));
-        // Attempt to log in the user
-        //Auth::guard('customer')->attempt($request->only('email', 'password'));
-            
-            //return redirect()->route('home.index')
-        $userData = null;
-        if(Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password])){
-
-            $userData = Auth::guard('customer')->user();
-            // dd($userData);
-            // Redirect to the home index route with user data in the session
-            return redirect()->route('home.index')->with('userData', $userData);
-
-            // $userData = Auth::guard('customer');
-            // //dd($userData);
-            // // return View::make('home.index')->with('userData',$userData);
-            // $data = [
-            //     'id' => 1
-            // ];
-            // return view('home',['userData' => $data]);
-            // return redirect()->route('home.index')->with(['userData' => $data]);
+        if (Auth::guard('customer')->attempt($request->only('email', 'password'), $request->remember)) {
+            return redirect()->route('home.index');
         }
 
-        // If login fails, return an error message
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid login credentials.'
-        ], 401);
+        return back()->withErrors(['email' => 'Invalid credentials.']);
     }
+
+
+    
 
 
     // LOGOUT

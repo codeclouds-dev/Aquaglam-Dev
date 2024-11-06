@@ -31,7 +31,8 @@
                     {{-- <p>Welcome, {{ Auth::guard('customer')->user()->firstname }}!</p> --}}
                     
                 @else
-                <li><i class="bi bi-person-circle" data-bs-toggle="modal" data-bs-target="#loginModal"></i></li>
+                <li><a href="{{route('login')}}"><i class="bi bi-person-circle"></i></a></li>
+                {{-- <li><i class="bi bi-person-circle" data-bs-toggle="modal" data-bs-target="{{route('login')}}"></i></li> --}}
                 
 
                     @if($errors->any())
